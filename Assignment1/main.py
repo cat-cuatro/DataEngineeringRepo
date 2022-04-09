@@ -13,7 +13,7 @@ PATTERN_KEYS = {
     'Generic': '<td>(.+|)<\/td>',
     'TeamName': '[\\n|\\r]+\s+(.*)\\r\\n\s+'
 }
-STRUCTURE_KEYS = ['Name', 'Rank', 'Bib', 'Gender', 'City', 'Chip Time', 'Gun Time', 'Team Name']
+STRUCTURE_KEYS = ['Rank', 'Bib', 'Name', 'Gender', 'City', 'Chip Time', 'Gun Time', 'Team Name']
 
 def old(rows):
     for row in rows:
@@ -37,8 +37,10 @@ def init():
     return structure
 
 def updateStructure(structure, toAdd):
-    for field in toAdd:
-        structure[field].append(toAdd[field])
+    i = 0
+    for field in structure:
+        structure[field].append(toAdd[i])
+        i+=1
 
 def retrievePage():
     url = "http://www.hubertiming.com/results/2017GPTR10K"
@@ -91,6 +93,7 @@ def parseData(rows):
     return participantStructuredData
 
 def retrieveRunnerData(soup):
+    structure = init()
     title = soup.title
     print(title)
     text = soup.get_text()
@@ -109,13 +112,14 @@ def retrieveRunnerData(soup):
                 data[-1] = re.findall(teamPattern, data[-1])[0]
             except IndexError:
                 pass
-        for i in range(len(data)):
-            if data[i] == ' ':
-                data[i] = 'n/a'
+            for i in range(len(data)):
+                if data[i] == ' ':
+                    data[i] = 'n/a'
+            updateStructure(structure, data)
         print(data)
-    return pd.DataFrame(data)
+    return pd.DataFrame(structure)
 
-# Ran into some hiccups with the original data pull (omitted code left above), 
+# Ran into some hiccups with the original data pull because I accidentally ran off-script (omitted code left above), 
 # and I wasn't quite able to get the matplotlib stuff implemented in time before the end of the 2nd class period
 # But at least I was able to learn some valuable experience with beautiful soup and relating that to HTML elements
 def main():
