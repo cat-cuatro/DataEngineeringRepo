@@ -90,7 +90,7 @@ def parseData(rows):
                 updateStructure(participantStructuredData, toAdd)
     return participantStructuredData
 
-def displayDetails(soup):
+def retrieveRunnerData(soup):
     title = soup.title
     print(title)
     text = soup.get_text()
@@ -113,17 +113,23 @@ def displayDetails(soup):
             if data[i] == ' ':
                 data[i] = 'n/a'
         print(data)
+    return pd.DataFrame(data)
 
+# Ran into some hiccups with the original data pull (omitted code left above), 
+# and I wasn't quite able to get the matplotlib stuff implemented in time before the end of the 2nd class period
+# But at least I was able to learn some valuable experience with beautiful soup and relating that to HTML elements
 def main():
     soup = retrievePage()
-    displayDetails(soup)
+    print(retrieveRunnerData(soup))
 
 if __name__ == "__main__":
     main()
 
+## old
 # <td>[\r\n]+[\s]+([a-zA-Z]+) ([a-zA-Z]+)[\r\n]+[\s]+<\/td> <<< First and last name
 # <td>(.+|)<\/td> <<<    gender, city, chip time, gun time
 # ^<img.*[\r\n]\s+(.*)$ <<<    Team name
 
+## new
 # [\\r|\\n]+\s+(.*)\\r\\n\\r\\n\s+ name
 # [\\n|\\r]+\s+(.*)\\r\\n\s+ team name
