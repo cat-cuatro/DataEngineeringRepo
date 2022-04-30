@@ -73,6 +73,7 @@ def cleanPublicationYear(df):
     return df
     
 def cleanPublicationCity(df):
+    # How to use applymap?
     pass
 
 def main():
