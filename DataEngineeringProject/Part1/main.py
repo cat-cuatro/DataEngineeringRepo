@@ -16,12 +16,12 @@ def consumeTopics():
     pass
 
 def consumerScriptCall():
-    path = '~/DataEngineeringRepo/DataEngineeringProject/Part2/python/producer.py'
+    path = '~/DataEngineeringRepo/DataEngineeringProject/Part1/python/consumer.py'
     cmd = ['python3', path, '-f', '~/.confluent/librdkafka.config', '-t', 'test1']
     subprocess.run(' '.join(cmd), shell=True)
 
 def producerScriptCall():
-    path = '~/DataEngineeringRepo/DataEngineeringProject/Part2/python/consumer.py'
+    path = '~/DataEngineeringRepo/DataEngineeringProject/Part1/python/producer.py'
     cmd = ['python3', path, '-f', '~/.confluent/librdkafka.config', '-t', 'test1']
     subprocess.run(' '.join(cmd), shell=True)
 

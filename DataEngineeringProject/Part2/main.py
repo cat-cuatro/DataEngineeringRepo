@@ -16,13 +16,13 @@ def consumeTopics():
     pass
 
 def consumerScriptCall():
-    path = '~/DataEngineeringRepo/DataEngineeringProject/Part1/python/producer.py'
-    cmd = ['python3', path, '-f', '~/.confluent/librdkafka.config', '-t', 'test1']
+    path = '~/DataEngineeringRepo/DataEngineeringProject/Part2/python/consumer.py'
+    cmd = ['python3', path, '-f', '~/.confluent/librdkafka.config', '-t', 'sensor-data']
     subprocess.run(' '.join(cmd), shell=True)
 
 def producerScriptCall():
-    path = '~/DataEngineeringRepo/DataEngineeringProject/Part1/python/consumer.py'
-    cmd = ['python3', path, '-f', '~/.confluent/librdkafka.config', '-t', 'test1']
+    path = '~/DataEngineeringRepo/DataEngineeringProject/Part2/python/producer.py'
+    cmd = ['python3', path, '-f', '~/.confluent/librdkafka.config', '-t', 'sensor-data']
     subprocess.run(' '.join(cmd), shell=True)
 
 def produceTopics(fname): #unused atm
@@ -32,8 +32,10 @@ def produceTopics(fname): #unused atm
 def main(args):
     dataFetcher = Fetcher()
     if 'consume' in args:
+        print('Consuming some data!')
         consumerScriptCall()
     elif 'produce' in args:
+        print('Producing some data!')
         producerScriptCall()
     else:
         fname = dataFetcher.grabBreadCrumbs()
