@@ -26,13 +26,14 @@ from confluent_kafka import Producer, KafkaError
 import json
 import ccloud_lib
 import sys
-sys.path.append('/home/lorenz2/DataEngineeringRepo/DataEngineeringProject/Part1')
+sys.path.append('/home/lorenz2/DataEngineeringRepo/DataEngineeringProject/Part2')
+sys.path.append('C:\Users\JohnD\Desktop\MSCS Files\Spring 2022 Course Materials\CS 510\Repo\DataEngineeringRepo\DataEngineeringProject\Part2')
 from fetcher import Fetcher
 
 if __name__ == '__main__':
-    #dataFetcher = Fetcher()
-    #data = dataFetcher.grabBreadCrumbs(write=False)
-    f = open('/home/lorenz2/2022-04-15-ascii')
+    dataFetcher = Fetcher()
+    data = dataFetcher.grabBreadCrumbs(write=False)
+    #f = open('/home/lorenz2/2022-04-15-ascii')
     data = json.load(f)
     # Read arguments and configurations and initialize
     args = ccloud_lib.parse_args()
