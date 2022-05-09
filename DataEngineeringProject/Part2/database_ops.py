@@ -54,16 +54,16 @@ def insert(breadcrumbs):
     for i in range(len(breadcrumbs['ACT_TIME'])):
                     # tstamp, lat, long, dir, speed, trip_id
         crumb_data = build_insert_data(breadcrumbs, i, 'breadcrumb')
-        print(len(crumb_data))
+        #print(len(crumb_data))
         cmd = f"INSERT INTO breadcrumb (tstamp, latitude, longitude, direction, speed, trip_id) VALUES {crumb_data};"
         breadcrumb_data_inserts.append(cmd)
         if breadcrumbs['EVENT_NO_TRIP'][i] not in trip_ids:
             trip_data = build_insert_data(breadcrumbs, i, 'trip')
             cmd = f"INSERT INTO trip (trip_id, route_id, vehicle_id, service_key, direction) VALUES {trip_data};"
             trip_inserts.append(cmd)
-            print('adding..', breadcrumbs['EVENT_NO_TRIP'][i])
+            #print('adding..', breadcrumbs['EVENT_NO_TRIP'][i])
             trip_ids.append(breadcrumbs['EVENT_NO_TRIP'][i])
-            print(trip_ids)
+            #print(trip_ids)
 
     print('Beginning breadcrumb table insertions..')
     with conn.cursor() as cur:

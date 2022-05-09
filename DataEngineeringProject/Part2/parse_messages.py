@@ -36,9 +36,10 @@ class Parser():
         try:
             self.sort_match_data(matches[0])
         except IndexError:
-            print('NO MATCHES!!')
-            print(string)
-        print('now storing into the database..')
+            pass
+            #print('NO MATCHES!!')
+            #print(string)
+        #print('now storing into the database..')
         return matches
 
     def sort_match_data(self, matches):
@@ -72,7 +73,8 @@ class Parser():
         self.data = {}
 
 if __name__ == "__main__":
-    p = Parser()
-    p.parse()
-    print('now storing into the database..')
-    database_ops.insert(p.structured_data)
+    pass
+    #p = Parser()
+    #p.parse()
+    #print('now storing into the database..')
+    #database_ops.insert(p.structured_data)
