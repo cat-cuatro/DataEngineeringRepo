@@ -39,7 +39,6 @@ class Parser():
             print('NO MATCHES!!')
             print(string)
         print('now storing into the database..')
-        database_ops.insert(self.structured_data)
         return matches
 
     def sort_match_data(self, matches):
@@ -63,6 +62,7 @@ class Parser():
                 #print(m)
                 #print(datum)
         print(self.structured_data)
+        database_ops.insert(self.structured_data)
 
     def add_to_data(self, unparsed_message):
         # storing the consumer data is the best way to avoid hanging the I/O polling.

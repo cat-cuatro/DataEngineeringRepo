@@ -68,10 +68,10 @@ def insert(breadcrumbs):
     print('Beginning breadcrumb table insertions..')
     with conn.cursor() as cur:
         print('Beginning trip table insertions..')
-        for insert in trip_inserts:
-            cur.execute(insert)
-        for insert in breadcrumb_data_inserts:
-            cur.execute(insert)
+        for ins in trip_inserts:
+            cur.execute(ins)
+        for ins in breadcrumb_data_inserts:
+            cur.execute(ins)
 
 
     print('Success!')
