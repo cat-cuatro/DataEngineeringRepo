@@ -27,11 +27,14 @@ def establish_connection():
 def build_insert_data(crumb, i, type):
     #print('CRUMB RECEIVED:', crumb)
     if type == 'breadcrumb':
-        tstamp = '2011-05-16 15:36:38'#crumb['OPD_DATE'][i]
+        tstamp = crumb['OPD_DATE'][i]
         latitude = float(crumb['GPS_LATITUDE'][i])
         longitude = float(crumb['GPS_LONGITUDE'][i])
         direction = 1#int(crumb['DIRECTION'])
-        speed = int(crumb['VELOCITY'][i])
+        try:
+            speed = int(crumb['VELOCITY'][i])
+        except ValueError:
+            speed = 0
         trip_id = int(crumb['EVENT_NO_TRIP'][i])
         vals = (tstamp, latitude, longitude, direction, speed, trip_id)
     elif type == 'trip':

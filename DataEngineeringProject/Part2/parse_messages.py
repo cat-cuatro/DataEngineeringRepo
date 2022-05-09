@@ -1,11 +1,12 @@
 import re
 import database_ops
+import time
 
 class Parser():
     def __init__(self):
         self.data = []
         self.pattern_keys = {
-                "BREADCRUMBS": r'(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+-\w+-\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "()[\"|\s|\,|\w]+: "(-\d+.\d+|\d+.\d+)[\"|\s|\,|\w]+: "(-\d+.\d+|\d+.\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+.\d+)[\"|\s|\,|\w]+: "(|\d+)"'
+                "BREADCRUMBS": r'(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+-\w+-\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(|\d+)[\"|\s|\,|\w]+: "(|\d+)[\"|\s|\,|\w]+: "()[\"|\s|\,|\w]+: "(-\d+.\d+|\d+.\d+)[\"|\s|\,|\w]+: "(-\d+.\d+|\d+.\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+|\d+.\d+)[\"|\s|\,|\w]+: "(|-\d+|\d+)"'
         }
         self.keys = [
                 'EVENT_NO_TRIP', 
@@ -31,14 +32,15 @@ class Parser():
         return to_return
 
     def parse(self, string):
+        #time.sleep(0.1)
         matches = re.findall(self.pattern_keys["BREADCRUMBS"], string)
         # After using the world's ugliest regex string I presumably have all of the breadcrumb data in-order.
         try:
             self.sort_match_data(matches[0])
         except IndexError:
             pass
-            #print('NO MATCHES!!')
-            #print(string)
+            print('NO MATCHES!!')
+            print(string)
         #print('now storing into the database..')
         return matches
 
@@ -62,7 +64,7 @@ class Parser():
                 print('Processed:', process_counter, 'of', len(self.data))
                 #print(m)
                 #print(datum)
-        print(self.structured_data)
+        #print(self.structured_data)
         database_ops.insert(self.structured_data)
 
     def add_to_data(self, unparsed_message):

@@ -26,15 +26,26 @@ from confluent_kafka import Producer, KafkaError
 import json
 import ccloud_lib
 import sys
+import os
 sys.path.append('/home/lorenz2/DataEngineeringRepo/DataEngineeringProject/Part2')
 from fetcher import Fetcher
 
 if __name__ == '__main__':
-    dataFetcher = Fetcher()
-    data = dataFetcher.grabBreadCrumbs(write=False)
+    #dataFetcher = Fetcher()
+    #data = dataFetcher.grabBreadCrumbs(write=False)
     ######## if manually loading
-    #f = open('/home/lorenz2/2022-04-15-ascii')
+    dirs = os.listdir('../../..')
+    files = []
+
+#    for f in dirs:
+#        if 'ascii' in f:
+#            to_read = '/home/lorenz2/'+str(f)
+#            files.append(to_read)
+
+    #f = open('/home/lorenz2/2022-04-30-ascii')
     #data = json.load(f)
+    files.append('/home/lorenz2/2022-04-29-ascii')
+
     #########
     # Read arguments and configurations and initialize
     args = ccloud_lib.parse_args()
@@ -63,21 +74,26 @@ if __name__ == '__main__':
             print("Failed to deliver message: {}".format(err))
         else:
             delivered_records += 1
-            print("Produced record to topic {} partition [{}] @ offset {}"
-                  .format(msg.topic(), msg.partition(), msg.offset()))
+            #print("Produced record to topic {} partition [{}] @ offset {}"
+            #      .format(msg.topic(), msg.partition(), msg.offset()))
 
     #for n in range(100):
-    for i in range(150):#len(data)):
-        record_key = "GCP Producer"#"alice"
-        data[i].update({'count': i})
-        record_value = json.dumps(data[i])#json.dumps({'count': n})
+    for f in files:
+        current = open(f)
+        data = json.load(current)
+        current.close()
+        print('loading..', current)
+        for i in range(len(data)):
+            record_key = "GCP Producer"#"alice"
+            data[i].update({'count': i})
+            record_value = json.dumps(data[i])#json.dumps({'count': n})
         #record_key = "alice"
         #record_value = json.dumps({'count': n})
         #print("Producing record: {}\t{}".format(record_key, record_value))
-        producer.produce(topic, key=record_key, value=record_value, on_delivery=acked)
+            producer.produce(topic, key=record_key, value=record_value, on_delivery=acked)
         # p.poll() serves delivery reports (on_delivery)
         # from previous produce() calls.
-        producer.poll(0)
+            producer.poll(0)
 
     producer.flush()
     print(sys.argv)
