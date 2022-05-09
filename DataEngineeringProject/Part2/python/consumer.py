@@ -25,7 +25,12 @@
 from confluent_kafka import Consumer
 import json
 import ccloud_lib
+import sys
+sys.path.append('/home/lorenz2/DataEngineeringRepo/DataEngineeringProject/Part2')
+from parse_messages import Parser
 
+def push_data(parser):
+    parser.parse_data_fields()
 
 if __name__ == '__main__':
 
@@ -48,8 +53,10 @@ if __name__ == '__main__':
 
     # Process messages
     total_count = 0
+    p = Parser()
+    terminate_count = 0
     try:
-        while True:
+        while terminate_count < 5:
             msg = consumer.poll(1.0)
             if msg is None:
                 # No message available within timeout.
@@ -57,6 +64,7 @@ if __name__ == '__main__':
                 # `session.timeout.ms` for the consumer group to
                 # rebalance and start consuming
                 print("Waiting for message or event/error in poll()")
+                terminate_count += 1
                 continue
             elif msg.error():
                 print('error: {}'.format(msg.error()))
@@ -68,7 +76,8 @@ if __name__ == '__main__':
                 count = data['count']
                 total_count += count
                 message_value = record_value.decode("utf-8")
-                print(message_value)
+                #print(message_value)
+                p.add_to_data(message_value)
                 #print("Consumed record with key {} and value {}, \
                 #      and updated total count to {}"
                 #      .format(record_key, record_value, total_count))
@@ -77,3 +86,5 @@ if __name__ == '__main__':
     finally:
         # Leave group and commit final offsets
         consumer.close()
+    print('entering push')
+    push_data(p)

@@ -67,7 +67,7 @@ if __name__ == '__main__':
                   .format(msg.topic(), msg.partition(), msg.offset()))
 
     #for n in range(100):
-    for i in range(len(data)):
+    for i in range(100):#len(data)):
         record_key = "GCP Producer"#"alice"
         data[i].update({'count': i})
         record_value = json.dumps(data[i])#json.dumps({'count': n})
