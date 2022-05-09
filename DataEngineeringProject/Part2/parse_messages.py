@@ -1,4 +1,5 @@
 import re
+import database_ops
 
 class Parser():
     def __init__(self):
@@ -37,6 +38,8 @@ class Parser():
         except IndexError:
             print('NO MATCHES!!')
             print(string)
+        print('now storing into the database..')
+        database_ops.insert(self.structured_data)
         return matches
 
     def sort_match_data(self, matches):
@@ -71,3 +74,5 @@ class Parser():
 if __name__ == "__main__":
     p = Parser()
     p.parse()
+    print('now storing into the database..')
+    database_ops.insert(p.structured_data)

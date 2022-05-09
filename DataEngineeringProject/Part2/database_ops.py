@@ -24,21 +24,22 @@ def establish_connection():
     conn.autocommit=True
     return conn
 
-def build_insert_data(crumb, type):
+def build_insert_data(crumb, i, type):
+    #print('CRUMB RECEIVED:', crumb)
     if type == 'breadcrumb':
-        tstamp = int(crumb['ACT_TIME'])
-        latitude = float(crumb['GPS_LATITUDE'])
-        longitude = float(crumb['GPS_LONGITUDE'])
+        tstamp = '2011-05-16 15:36:38'#crumb['OPD_DATE'][i]
+        latitude = float(crumb['GPS_LATITUDE'][i])
+        longitude = float(crumb['GPS_LONGITUDE'][i])
         direction = 1#int(crumb['DIRECTION'])
-        speed = int(crumb['VELOCITY'])
-        trip_id = int(crumb['EVENT_NO_TRIP'])
+        speed = int(crumb['VELOCITY'][i])
+        trip_id = int(crumb['EVENT_NO_TRIP'][i])
         vals = (tstamp, latitude, longitude, direction, speed, trip_id)
     elif type == 'trip':
-        trip_id = int(crumb['EVENT_NO_TRIP'])
-        route_id = int(crumb['EVENT_NO_STOP'])
-        vehicle_id = int(crumb['VEHICLE_ID'])
+        trip_id = int(crumb['EVENT_NO_TRIP'][i])
+        route_id = int(crumb['EVENT_NO_STOP'][i])
+        vehicle_id = int(crumb['VEHICLE_ID'][i])
         service_key = 'Weekday'#str(crumb[''])
-        direction = 1
+        direction = "Out"
         vals = (trip_id, route_id, vehicle_id, service_key, direction)
 
     return vals
@@ -48,17 +49,29 @@ def insert(breadcrumbs):
     trip_inserts = []
     breadcrumb_data_inserts =[]
     conn = establish_connection()
-    cur = conn.cursor()
-    for crumb in breadcrumbs:
+    trip_ids = []
+    print('Generating commands for insertions..')
+    for i in range(len(breadcrumbs['ACT_TIME'])):
                     # tstamp, lat, long, dir, speed, trip_id
-        crumb_data = build_insert_data(crumb, 'breadcrumb')
-        cmd = f"INSERT INTO breadcrumb VALUES ({crumb_data});"
+        crumb_data = build_insert_data(breadcrumbs, i, 'breadcrumb')
+        print(len(crumb_data))
+        cmd = f"INSERT INTO breadcrumb (tstamp, latitude, longitude, direction, speed, trip_id) VALUES {crumb_data};"
         breadcrumb_data_inserts.append(cmd)
-        trip_data = build_insert_data(crumb, 'trip')
-        cmd = f"INSERT INTO trip VALUES ({trip_data});"
-        trip_inserts.append(cmd)
-    
-    for insert in breadcrumb_data_inserts:
-        cur.execute(insert)
-    for insert in trip_inserts:
-        cur.execute(insert)
+        if breadcrumbs['EVENT_NO_TRIP'][i] not in trip_ids:
+            trip_data = build_insert_data(breadcrumbs, i, 'trip')
+            cmd = f"INSERT INTO trip (trip_id, route_id, vehicle_id, service_key, direction) VALUES {trip_data};"
+            trip_inserts.append(cmd)
+            print('adding..', breadcrumbs['EVENT_NO_TRIP'][i])
+            trip_ids.append(breadcrumbs['EVENT_NO_TRIP'][i])
+            print(trip_ids)
+
+    print('Beginning breadcrumb table insertions..')
+    with conn.cursor() as cur:
+        print('Beginning trip table insertions..')
+        for insert in trip_inserts:
+            cur.execute(insert)
+        for insert in breadcrumb_data_inserts:
+            cur.execute(insert)
+
+
+    print('Success!')
