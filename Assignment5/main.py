@@ -115,9 +115,16 @@ def main():
     covidDf = readData('COVID_county_data.csv')
     censusDf = readData('acs2017_census_tract_data.csv')
     transformedDf = consolidateCensusData(censusDf, transformedDf)
-    print(pd.DataFrame.from_dict(transformedDf))
+    summedCensus = pd.DataFrame.from_dict(transformedDf)
+    countiesOfInterest = ['Loudoun County', 'Washington County', 'Harlan County', 'Malheur County']
+    for county in countiesOfInterest:
+        tempdf = summedCensus.loc[summedCensus['County'] == county]
+        print(county,':')
+        print('Total Pop', tempdf['TotalPop'], 'Poverty %', tempdf['Poverty'], 'PerCapital', tempdf['IncomePerCap'])
     #print(covidDf)
     #print(censusDf)
+    temp = covidDf.loc[covidDf['county'] == 'Snohomish']
+    print(list(set(temp['fips'])))
 
 if __name__ == "__main__":
     main()
