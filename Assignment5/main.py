@@ -124,7 +124,7 @@ def main():
     #print(covidDf)
     #print(censusDf)
     temp = covidDf.loc[covidDf['county'] == 'Snohomish']
-    print(list(set(temp['fips'])))
+    print(list(set(temp['2020-08-01'])))
 
 if __name__ == "__main__":
     main()
