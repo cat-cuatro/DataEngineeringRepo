@@ -1,0 +1,1 @@
+This folder contains both assignment5 and assignment6
