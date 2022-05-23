@@ -83,29 +83,30 @@ def build_event_insert(stop_events, i, type):
         schedule_status = int(stop_events['SCHEDULE_STATUS'])
         trip_id = int(stop_events['STOP_EVENT_ID'])
         vals = (
-            vehicle_number,
-            leave_time,
-            train,
-            route_number,
-            direction,
-            service_key,
-            stop_time,
-            arrive_time,
-            dwell,
-            location_id,
-            door,
-            lift,
-            ons,
-            offs,
-            estimated_load,
-            maximum_speed,
-            train_mileage,
-            pattern_distance,
-            location_distance,
-            x_coordinate,
-            y_coordinate,
-            data_source,
-            trip_id
+            vehicle_number, # 1
+            leave_time, #2
+            train, #3
+            route_number, #4
+            direction, #5
+            service_key, #6
+            stop_time, #7
+            arrive_time, #8
+            dwell, #9
+            location_id, #10
+            door, #11
+            lift, #12
+            ons, #13
+            offs, #14
+            estimated_load, #15
+            maximum_speed, #16
+            train_mileage, #17
+            pattern_distance, #18
+            location_distance, #19
+            x_coordinate, #20
+            y_coordinate, #21
+            data_source, #22
+            schedule_status, # 23
+            trip_id #24
         )
     elif type == 'trip':
         trip_id = int(stop_events['STOP_EVENT_ID'])
