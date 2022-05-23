@@ -162,4 +162,4 @@ if __name__ == "__main__":
     #newdf.update({"count": 1})
     #crumb = fetcher.grabBreadCrumbs(write=False)
     #print(crumb[0])
-    #print(type(crumb[0]))
+

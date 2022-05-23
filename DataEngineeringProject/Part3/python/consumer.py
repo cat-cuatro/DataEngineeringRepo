@@ -94,3 +94,4 @@ if __name__ == '__main__':
     print('entering push')
     #push_data(p) #push data into db
     print(temp[1])
+
