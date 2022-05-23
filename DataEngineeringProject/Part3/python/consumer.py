@@ -29,8 +29,8 @@ import sys
 sys.path.append('/home/lorenz2/DataEngineeringRepo/DataEngineeringProject/Part3')
 from parse_messages import Parser
 
-def push_data(parser):
-    parser.parse_data_fields()
+def push_data(parser, stop_events=None):
+    parser.parse_data_fields(stop_events)
 
 if __name__ == '__main__':
 
