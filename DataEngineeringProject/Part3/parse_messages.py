@@ -48,6 +48,8 @@ class Parser():
         for i in range(len(self.keys)):
             temp = self.structured_data.get(self.keys[i])
             try:
+                if self.keys[i] == 'VELOCITY':
+                    print(matches[i])
                 temp.append(matches[i])
             except IndexError:
                 temp.append("")
@@ -62,6 +64,7 @@ class Parser():
             process_counter += 1
             if process_counter % 10 == 0:
                 print('Processed:', process_counter, 'of', len(self.data))
+        return
         if stop_events:
             database_ops.insert(self.structured_data, stop_events)
         else:
