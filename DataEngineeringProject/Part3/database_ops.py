@@ -115,7 +115,7 @@ def build_event_insert(stop_events, i, type):
         vals = (trip_id, route_id, vehicle_id, service_key, direction)
     return vals
 
-def insert(breadcrumbs, stop_events):
+def insert(breadcrumbs, stop_events=None):
     trip_inserts = []
     breadcrumb_data_inserts =[]
     conn = establish_connection()
@@ -134,17 +134,18 @@ def insert(breadcrumbs, stop_events):
             #print('adding..', breadcrumbs['EVENT_NO_TRIP'][i])
             trip_ids.append(breadcrumbs['EVENT_NO_TRIP'][i])
             #print(trip_ids)
-    for i in range(len(stop_events)):
-        event = json.loads(stop_events[i])
-        stop_event_data = build_event_insert(event, i, 'stop_event')
-        cmd = f"""INSERT INTO stopevent (vehicle_number, leave_time, train, route_number, direction, service_key, stop_time, arrive_time, dwell, location_id, door, lift,
-         ons, offs, estimated_load, maximum_speed, train_mileage, pattern_distance, location_distance, x_coordinate, y_coordinate, data_source, schedule_status, trip_id) VALUES {stop_event_data};
-        """
-        if event['STOP_EVENT_ID'] not in trip_ids:
-            trip_data = build_event_insert(event, i, 'trip')
-            cmd = f"INSERT INTO trip (trip_id, route_id, vehicle_id, service_key, direction) VALUES {trip_data};"
-            trip_inserts.append(cmd)
-            trip_ids.append(event['STOP_EVENT_ID'])
+    if stop_events:
+        for i in range(len(stop_events)):
+            event = json.loads(stop_events[i])
+            stop_event_data = build_event_insert(event, i, 'stop_event')
+            cmd = f"""INSERT INTO stopevent (vehicle_number, leave_time, train, route_number, direction, service_key, stop_time, arrive_time, dwell, location_id, door, lift,
+            ons, offs, estimated_load, maximum_speed, train_mileage, pattern_distance, location_distance, x_coordinate, y_coordinate, data_source, schedule_status, trip_id) VALUES {stop_event_data};
+            """
+            if event['STOP_EVENT_ID'] not in trip_ids:
+                trip_data = build_event_insert(event, i, 'trip')
+                cmd = f"INSERT INTO trip (trip_id, route_id, vehicle_id, service_key, direction) VALUES {trip_data};"
+                trip_inserts.append(cmd)
+                trip_ids.append(event['STOP_EVENT_ID'])
 
     print('Beginning breadcrumb table insertions..')
     with conn.cursor() as cur:
