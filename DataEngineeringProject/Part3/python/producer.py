@@ -64,7 +64,7 @@ if __name__ == '__main__':
     dataFetcher = Fetcher()
     data = dataFetcher.grabBreadCrumbs(write=False)
     stop_event_data = dataFetcher.grabStopEvents(write=False)
-    files = None
+    files = open('/home/lorenz2/2022-05-16-ascii')
     ######## if manually loading
     #files = manualLoader()
     #########
@@ -101,15 +101,10 @@ if __name__ == '__main__':
             current.close()
             print('loading..', current)
             for i in range(len(data)):
-                record_key = "GCP Producer"#"alice"
+                record_key = "breadcrumbs"
                 data[i].update({'count': i})
-                record_value = json.dumps(data[i])#json.dumps({'count': n})
-            #record_key = "alice"
-            #record_value = json.dumps({'count': n})
-            #print("Producing record: {}\t{}".format(record_key, record_value))
+                record_value = json.dumps(data[i])
                 producer.produce(topic, key=record_key, value=record_value, on_delivery=acked)
-            # p.poll() serves delivery reports (on_delivery)
-            # from previous produce() calls.
                 producer.poll(0)
     else:
         produceData(data, 'breadcrumbs', producer, acked)
