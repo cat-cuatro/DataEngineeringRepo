@@ -1,6 +1,7 @@
 import time
 import psycopg2
 import argparse
+import json
 import re
 import csv
 
@@ -12,6 +13,8 @@ pw='1337'
 insert_breadcrumb = """INSERT INTO breadcrumb
 """
 insert_trip = """INSERT INTO trip
+"""
+insert_stop_events = """INSERT INTO stopevents
 """
 
 def establish_connection():
@@ -51,10 +54,68 @@ def build_insert_data(crumb, i, type):
         service_key = 'Weekday'#str(crumb[''])
         direction = "Out"
         vals = (trip_id, route_id, vehicle_id, service_key, direction)
-
     return vals
 
-def insert(breadcrumbs):
+def build_event_insert(stop_events, i, type):
+    if type == 'stop_event':
+        vehicle_number = int(stop_events['VEHICLE_NUMBER'])
+        leave_time = int(stop_events['LEAVE_TIME'])
+        train = int(stop_events['TRAIN'])
+        route_number = int(stop_events['ROUTE_NUMBER'])
+        direction = int(stop_events['DIRECTION'])
+        service_key = str(stop_events['SERVICE_KEY'])
+        stop_time = int(stop_events['STOP_TIME'])
+        arrive_time = int(stop_events['ARRIVE_TIME'])
+        dwell = int(stop_events['DWELL'])
+        location_id = int(stop_events['LOCATION_ID'])
+        door = int(stop_events['DOOR'])
+        lift = int(stop_events['LIFT'])
+        ons = int(stop_events['ONS'])
+        offs = int(stop_events['OFFS'])
+        estimate_load = int(stop_events['ESTIMATE_LOAD'])
+        maximum_speed = int(stop_events['MAXIMUM_SPEED'])
+        train_mileage = float(stop_events['TRAIN_MILEAGE'])
+        pattern_distance = float(stop_events['PATTERN_DISTANCE'])
+        location_distance = float(stop_events['LOCATION_DISTANCE'])
+        x_coordinate = float(stop_events['X_COORDINATE'])
+        y_coordinate = float(stop_events['Y_COORDINATE'])
+        data_source = int(stop_events['DATA_SOURCE'])
+        trip_id = int(stop_events['STOP_EVENT_ID'])
+        vals = (
+            vehicle_number,
+            leave_time,
+            train,
+            route_number,
+            direction,
+            service_key,
+            stop_time,
+            arrive_time,
+            dwell,
+            location_id,
+            door,
+            lift,
+            ons,
+            offs,
+            estimate_load,
+            maximum_speed,
+            train_mileage,
+            pattern_distance,
+            location_distance,
+            x_coordinate,
+            y_coordinate,
+            data_source,
+            trip_id
+        )
+    elif type == 'trip':
+        trip_id = int(stop_events['STOP_EVENT_ID'])
+        route_id = int(stop_events['ROUTE_NUMBER']) #???
+        vehicle_id = int(stop_events['VEHICLE_NUMBER'])
+        service_key = 'Weekday' #nyi
+        direction = "Out" #nyi
+        vals = (trip_id, route_id, vehicle_id, service_key, direction)
+    return vals
+
+def insert(breadcrumbs, stop_events):
     trip_inserts = []
     breadcrumb_data_inserts =[]
     conn = establish_connection()
@@ -73,6 +134,17 @@ def insert(breadcrumbs):
             #print('adding..', breadcrumbs['EVENT_NO_TRIP'][i])
             trip_ids.append(breadcrumbs['EVENT_NO_TRIP'][i])
             #print(trip_ids)
+    for i in range(len(stop_events)):
+        event = json.loads(stop_events[i])
+        stop_event_data = build_event_insert(event, i, 'stop_event')
+        cmd = f"""INSERT INTO stopevent (vehicle_number, leave_time, train, route_number, direction, service_key, stop_time, arrive_time, dwell, location_id, door, lift,
+         ons, offs, estimated_load, maximum_speed, train_mileage, pattern_distance, location_distance, x_coordinate, y_coordinate, data_source, schedule_status, trip_id) VALUES {stop_event_data};
+        """
+        if event['STOP_EVENT_ID'] not in trip_ids:
+            trip_data = build_event_insert(event, i, 'trip')
+            cmd = f"INSERT INTO trip (trip_id, route_id, vehicle_id, service_key, direction) VALUES {trip_data};"
+            trip_inserts.append(cmd)
+            trip_ids.append(event['STOP_EVENT_ID'])
 
     print('Beginning breadcrumb table insertions..')
     with conn.cursor() as cur:
