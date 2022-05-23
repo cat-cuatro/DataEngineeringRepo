@@ -54,7 +54,7 @@ class Parser():
             self.structured_data.update({self.keys[i] : temp})
         #print(self.structured_data)
     
-    def parse_data_fields(self):
+    def parse_data_fields(self, stop_events=None):
         print('There are:', len(self.data), 'entries.')
         process_counter = 0
         for datum in self.data:
@@ -62,7 +62,10 @@ class Parser():
             process_counter += 1
             if process_counter % 10 == 0:
                 print('Processed:', process_counter, 'of', len(self.data))
-        database_ops.insert(self.structured_data)
+        if stop_events:
+            database_ops.insert(self.structured_data, stop_events)
+        else:
+            database_ops.insert(self.structured_data)
 
     def add_to_data(self, unparsed_message):
         # storing the consumer data is the best way to avoid hanging the I/O polling.

@@ -55,7 +55,7 @@ if __name__ == '__main__':
     total_count = 0
     p = Parser()
     terminate_count = 0
-    temp = []
+    stop_events = []
     try:
         while terminate_count < 5:
             msg = consumer.poll(1.0)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
                 if record_key != 'stopevents':
                     p.add_to_data(message_value)
                 else:
-                    temp.append(message_value)
+                    stop_events.append(message_value)
                 #print("Consumed record with key {} and value {}, \
                 #      and updated total count to {}"
                 #      .format(record_key, record_value, total_count))
@@ -92,6 +92,5 @@ if __name__ == '__main__':
         # Leave group and commit final offsets
         consumer.close()
     print('entering push')
-    #push_data(p) #push data into db
-    print(temp[1])
+    push_data(p, stop_events) #push data into db
 
