@@ -72,7 +72,7 @@ def build_event_insert(stop_events, i, type):
         lift = int(stop_events['LIFT'])
         ons = int(stop_events['ONS'])
         offs = int(stop_events['OFFS'])
-        estimate_load = int(stop_events['ESTIMATE_LOAD'])
+        estimate_load = int(stop_events['ESTIMATED_LOAD'])
         maximum_speed = int(stop_events['MAXIMUM_SPEED'])
         train_mileage = float(stop_events['TRAIN_MILEAGE'])
         pattern_distance = float(stop_events['PATTERN_DISTANCE'])
@@ -118,6 +118,7 @@ def build_event_insert(stop_events, i, type):
 def insert(breadcrumbs, stop_events=None):
     trip_inserts = []
     breadcrumb_data_inserts =[]
+    stop_event_inserts = []
     conn = establish_connection()
     trip_ids = []
     print('Generating commands for insertions..')
@@ -141,6 +142,7 @@ def insert(breadcrumbs, stop_events=None):
             cmd = f"""INSERT INTO stopevent (vehicle_number, leave_time, train, route_number, direction, service_key, stop_time, arrive_time, dwell, location_id, door, lift,
             ons, offs, estimated_load, maximum_speed, train_mileage, pattern_distance, location_distance, x_coordinate, y_coordinate, data_source, schedule_status, trip_id) VALUES {stop_event_data};
             """
+            stop_event_inserts.append(cmd)
             if event['STOP_EVENT_ID'] not in trip_ids:
                 trip_data = build_event_insert(event, i, 'trip')
                 cmd = f"INSERT INTO trip (trip_id, route_id, vehicle_id, service_key, direction) VALUES {trip_data};"
@@ -153,6 +155,8 @@ def insert(breadcrumbs, stop_events=None):
         for ins in trip_inserts:
             cur.execute(ins)
         for ins in breadcrumb_data_inserts:
+            cur.execute(ins)
+        for ins in stop_event_inserts:
             cur.execute(ins)
 
     print('Success!')
