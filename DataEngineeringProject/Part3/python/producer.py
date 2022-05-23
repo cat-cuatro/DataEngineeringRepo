@@ -64,7 +64,7 @@ if __name__ == '__main__':
     dataFetcher = Fetcher()
     data = dataFetcher.grabBreadCrumbs(write=False)
     stop_event_data = dataFetcher.grabStopEvents(write=False)
-    files = open('/home/lorenz2/2022-05-16-ascii')
+    files = ['/home/lorenz2/BreadCrumbs/April/2022-04-24-ascii', '/home/lorenz2/BreadCrumbs/April/2022-04-22-ascii']
     ######## if manually loading
     #files = manualLoader()
     #########
