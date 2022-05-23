@@ -72,7 +72,7 @@ def build_event_insert(stop_events, i, type):
         lift = int(stop_events['LIFT'])
         ons = int(stop_events['ONS'])
         offs = int(stop_events['OFFS'])
-        estimate_load = int(stop_events['ESTIMATED_LOAD'])
+        estimated_load = int(stop_events['ESTIMATED_LOAD'])
         maximum_speed = int(stop_events['MAXIMUM_SPEED'])
         train_mileage = float(stop_events['TRAIN_MILEAGE'])
         pattern_distance = float(stop_events['PATTERN_DISTANCE'])
@@ -80,6 +80,7 @@ def build_event_insert(stop_events, i, type):
         x_coordinate = float(stop_events['X_COORDINATE'])
         y_coordinate = float(stop_events['Y_COORDINATE'])
         data_source = int(stop_events['DATA_SOURCE'])
+        schedule_status = int(stop_events['SCHEDULE_STATUS'])
         trip_id = int(stop_events['STOP_EVENT_ID'])
         vals = (
             vehicle_number,
@@ -96,7 +97,7 @@ def build_event_insert(stop_events, i, type):
             lift,
             ons,
             offs,
-            estimate_load,
+            estimated_load,
             maximum_speed,
             train_mileage,
             pattern_distance,
