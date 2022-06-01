@@ -46,6 +46,9 @@ def manualLoader():
     return files
 
 def produceData(data, type_retrieved, producer, ackfunc):
+    """
+    Provided a data source, and the type of data (either breadcrumbs or stopevents) forward the data as topics to Kafka.
+    """
     for i in range(len(data)):
         record_key = type_retrieved
         data[i].update({'count': i})
@@ -54,6 +57,9 @@ def produceData(data, type_retrieved, producer, ackfunc):
         producer.poll(0)
 
 def convertToPacketList(stop_event_dataframe):
+    """
+    Creates a json-like list of data that is ready to be produced as Kafka messages.
+    """
     packets = []
     for i in range(0, len(stop_event_dataframe.index)):
         packet = stop_event_dataframe.iloc[[i]].to_dict(orient='index') # god I hate dataframes sometimes..

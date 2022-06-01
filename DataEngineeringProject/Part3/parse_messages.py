@@ -6,6 +6,7 @@ class Parser():
     def __init__(self):
         self.data = []
         self.pattern_keys = {
+                # This was just a bout of laziness
                 "BREADCRUMBS": r'(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+-\w+-\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+)[\"|\s|\,|\w]+: "(\d+|)[\"|\s|\,|\w]+: "(\d+|)[\"|\s|\,|\w]+: "(\d+|)[\"|\s|\,|\w]+: "(-\d+.\d+|\d+.\d+|)[\"|\s|\,|\w]+: "(-\d+.\d+|\d+.\d+|)[\"|\s|\,|\w]+: "(\d+|)[\"|\s|\,|\w]+: "(\d+|\d+.\d+|)[\"|\s|\,|\w]+: "(-\d+|\d+|)"'
         }
         self.keys = [
@@ -32,7 +33,9 @@ class Parser():
         return to_return
 
     def parse(self, string):
-        #time.sleep(0.1)
+        """
+        Uses the world's ugliest regex string above to filter for matches.
+        """
         matches = re.findall(self.pattern_keys["BREADCRUMBS"], string)
         # After using the world's ugliest regex string I presumably have all of the breadcrumb data in-order.
         try:
@@ -41,10 +44,11 @@ class Parser():
             pass
             print('NO MATCHES!!')
             print(string)
-        #print('now storing into the database..')
-        return matches
 
     def sort_match_data(self, matches):
+        """
+        Appends a piece of new data to it's 'bin'. For example, an event ID would be appended to the end of the event ID dictionary list.
+        """
         for i in range(len(self.keys)):
             temp = self.structured_data.get(self.keys[i])
             try:
@@ -52,13 +56,17 @@ class Parser():
             except IndexError:
                 temp.append("")
             self.structured_data.update({self.keys[i] : temp})
-        #print(self.structured_data)
     
     def parse_data_fields(self, stop_events=None):
+        """
+        Data is assumed to already exist in the object. (add_to_data accomplishes this)
+        Existing data behaves like a buffer, and the parsing tool gradually processes the list of data in entirety.
+        Data is consumed in a json-like format.
+        """
         print('There are:', len(self.data), 'entries.')
         process_counter = 0
         for datum in self.data:
-            m = self.parse(datum)
+            self.parse(datum)
             process_counter += 1
             if process_counter % 10 == 0:
                 print('Processed:', process_counter, 'of', len(self.data))
@@ -75,8 +83,5 @@ class Parser():
         self.data = {}
 
 if __name__ == "__main__":
+    print('debug statements here')
     pass
-    #p = Parser()
-    #p.parse()
-    #print('now storing into the database..')
-    #database_ops.insert(p.structured_data)
