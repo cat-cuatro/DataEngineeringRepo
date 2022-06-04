@@ -92,5 +92,5 @@ if __name__ == '__main__':
         # Leave group and commit final offsets
         consumer.close()
     print('entering push')
-    push_data(p, stop_events) #push data into db
+    #push_data(p, stop_events) #push data into db
 
